@@ -5,8 +5,8 @@
 
 #include "byteray.hxx"
 
-#define CHUNK_SIZE (10 * 1000 * 1000)
-#define MAX_CACHE_CHUNKS 5
+#define CHUNK_SIZE (10L * 1000L * 1000L)
+#define MAX_CACHE_CHUNKS 5L
 
 std::string random_string( size_t length )
 {

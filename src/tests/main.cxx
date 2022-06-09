@@ -12,12 +12,12 @@ void create_write_read(int64_t size, const char *wbuf, int64_t writeSize) {
 
     ByteRay bray(size);
 
-    for (int i = 0; i < size; i += writeSize) {
+    for (int64_t i = 0; i < size; i += writeSize) {
         int64_t amount = std::min(writeSize, size - i);
         bray.write(wbuf, amount, i);
     }
 
-    for (int i = 0; i < size; i += READ_INCR) {
+    for (int64_t i = 0; i < size; i += READ_INCR) {
         if (bray.at(i) != WBUF_VAL) {
             std::cerr << "ByteRay at " << i << " != " << WBUF_VAL;
             return;
@@ -44,7 +44,8 @@ int main() {
     create_write_read(8 * 1000 * 1000, writeBuf, WBUF_SZ);
     create_write_read(16 * 1000 * 1000, writeBuf, 100);
     create_write_read(100 * 1000 * 1000, writeBuf, 100);
-    //create_write_read(1000 * 1000 * 1000, writeBuf, WBUF_SZ);
+    create_write_read(1000 * 1000 * 1000, writeBuf, WBUF_SZ);
+    create_write_read(10L * 1000L * 1000L * 1000L, writeBuf, WBUF_SZ);
 
     return 0;
 }
