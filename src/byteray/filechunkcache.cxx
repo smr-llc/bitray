@@ -1,5 +1,6 @@
 #include "filechunkcache.hxx"
 #include <cstring>
+#include <iostream>
 
 FileChunkCache::FileChunkCache(std::fstream *filestream, std::mutex *fileMutex, int64_t offset, int64_t size) :
     m_size(size),
@@ -7,7 +8,7 @@ FileChunkCache::FileChunkCache(std::fstream *filestream, std::mutex *fileMutex, 
     m_filestream(filestream),
     m_fileMutex(fileMutex)
 {
-    m_data = (char*)malloc(size);
+    m_data = (char*)malloc(m_size);
     {
         std::scoped_lock lock(*m_fileMutex);
         m_filestream->seekg(m_offset);

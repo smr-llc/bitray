@@ -3,9 +3,11 @@
 #include <string>
 #include <memory>
 
+#include <iostream>
+
 #include "byteray.hxx"
 
-#define CHUNK_SIZE (10L * 1000L * 1000L)
+#define CHUNK_SIZE (10 * 1000 * 1000)
 #define MAX_CACHE_CHUNKS 5L
 
 std::string random_string( size_t length )
@@ -98,7 +100,7 @@ void ByteRay::initFromOther(const ByteRay &other, int64_t size)
     m_size = size;
     int64_t bytesToRead = m_size;
     int64_t readOffset = 0;
-    auto byteBuffer = std::make_unique<char>(CHUNK_SIZE);
+    auto byteBuffer = std::make_unique<char[]>(CHUNK_SIZE);
     while (bytesToRead > 0) {
         int64_t byteChunkSize = std::min(bytesToRead, int64_t(CHUNK_SIZE));
         other.read(byteBuffer.get(), byteChunkSize, readOffset);
@@ -113,7 +115,7 @@ void ByteRay::initFromStream(std::istream &dataStream, int64_t size)
 {
     m_size = size;
     int64_t bytesToRead = m_size;
-    auto byteBuffer = std::make_unique<char>(CHUNK_SIZE);
+    auto byteBuffer = std::make_unique<char[]>(CHUNK_SIZE);
     while (bytesToRead > 0) {
         int64_t actualBytes = std::min(bytesToRead, int64_t(CHUNK_SIZE));
         int64_t bytesRead = dataStream.readsome(byteBuffer.get(), actualBytes);
@@ -151,8 +153,11 @@ std::shared_ptr<FileChunkCache> ByteRay::loadCacheAt(int64_t i) const
     }
 
     int64_t byteIdx = cacheIdx * CHUNK_SIZE;
+    int64_t chunkSize = std::min(m_size - byteIdx, int64_t(CHUNK_SIZE));
 
-    auto chunk = std::shared_ptr<FileChunkCache>(new FileChunkCache(&m_dataFile, &m_dataFileMutex, byteIdx, CHUNK_SIZE));
+    auto chunk = std::shared_ptr<FileChunkCache>(new FileChunkCache(&m_dataFile, &m_dataFileMutex, byteIdx, chunkSize));
+    uint64_t chunkChunk;
+    chunk->read(reinterpret_cast<char*>(&chunkChunk), sizeof(uint64_t));
     m_dataCaches.emplace(cacheIdx, chunk);
     m_recentCacheAccess.push_back(cacheIdx);
 
