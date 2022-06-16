@@ -1,0 +1,36 @@
+name: Build Docs and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: false
+          fetch-depth: 1
+
+      - name: Get doc build dependencies
+        run: |
+          sudo apt-get install -y doxygen cmake ninja-build
+          pip install sphinx sphinx_rtd_theme breathe
+      
+      - name: Build docs
+        run: |
+          cmake . -Bbuild -GNinja -DBITRAY_BUILD_DOCS=ON
+          cmake --build build
+
+      - name: Deploy docs
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/docs/sphinx/
