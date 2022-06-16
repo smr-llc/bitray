@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <fstream>
 #include <mutex>
+#include <shared_mutex>
 #include <vector>
 #include <map>
 
@@ -54,7 +55,7 @@ protected:
 private:
     int64_t m_size;
     mutable std::mutex m_mutex;
-    mutable std::mutex m_cacheMutex;
+    mutable std::shared_mutex m_cacheMutex;
 
     fs::path m_dataFilePath;
     mutable std::fstream m_dataFile;

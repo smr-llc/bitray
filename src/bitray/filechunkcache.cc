@@ -30,22 +30,23 @@ int64_t FileChunkCache::offset() const {
 }
 
 char FileChunkCache::at(int64_t idx) const {
-    std::scoped_lock lock(m_cacheMutex);
+    std::shared_lock lock(m_cacheMutex);
     return m_data[idx];
 }
 
 void FileChunkCache::read(char *buffer, int64_t bufferLength, int64_t readOffset) const {
-    std::scoped_lock lock(m_cacheMutex);
+    std::shared_lock lock(m_cacheMutex);
     memcpy(buffer, m_data + readOffset, bufferLength);
 }
 
 void FileChunkCache::write(const char *data, int64_t dataLength, int64_t writeOffset) {
-    std::scoped_lock lock(m_cacheMutex);
+    std::unique_lock lock(m_cacheMutex);
     memcpy(m_data + writeOffset, data, dataLength);
 }
 
 void FileChunkCache::syncToFile() {
-    std::scoped_lock lock(*m_fileMutex, m_cacheMutex);
+    std::unique_lock cacheLock(m_cacheMutex);
+    std::scoped_lock fileLock(*m_fileMutex);
     m_filestream->seekp(m_offset);
     m_filestream->write(m_data, m_size);
 }

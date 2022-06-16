@@ -132,7 +132,8 @@ void ByteRay::initFromStream(std::istream &dataStream, int64_t size)
 
 void ByteRay::reinitializeCache(int64_t size)
 {
-    std::scoped_lock lock(m_cacheMutex, m_mutex);
+    std::scoped_lock lock(m_mutex);
+    std::unique_lock cacheLock(m_cacheMutex);
     m_dataCaches.clear();
     m_recentCacheAccess.clear();
     if (size >= 0) {
@@ -145,29 +146,34 @@ void ByteRay::reinitializeCache(int64_t size)
 
 std::shared_ptr<FileChunkCache> ByteRay::loadCacheAt(int64_t i) const
 {
-    std::scoped_lock lock(m_cacheMutex);
     int64_t cacheIdx = i / CHUNK_SIZE;
-    auto it = m_dataCaches.find(cacheIdx);
-    if (it != m_dataCaches.end()) {
-        return it->second;
+    {
+        std::shared_lock lock(m_cacheMutex);
+        auto it = m_dataCaches.find(cacheIdx);
+        if (it != m_dataCaches.end()) {
+            return it->second;
+        }
     }
 
-    int64_t byteIdx = cacheIdx * CHUNK_SIZE;
-    int64_t chunkSize = std::min(m_size - byteIdx, int64_t(CHUNK_SIZE));
+    {
+        std::unique_lock lock(m_cacheMutex);
+        int64_t byteIdx = cacheIdx * CHUNK_SIZE;
+        int64_t chunkSize = std::min(m_size - byteIdx, int64_t(CHUNK_SIZE));
 
-    auto chunk = std::shared_ptr<FileChunkCache>(new FileChunkCache(&m_dataFile, &m_dataFileMutex, byteIdx, chunkSize));
-    uint64_t chunkChunk;
-    chunk->read(reinterpret_cast<char*>(&chunkChunk), sizeof(uint64_t));
-    m_dataCaches.emplace(cacheIdx, chunk);
-    m_recentCacheAccess.push_back(cacheIdx);
+        auto chunk = std::shared_ptr<FileChunkCache>(new FileChunkCache(&m_dataFile, &m_dataFileMutex, byteIdx, chunkSize));
+        uint64_t chunkChunk;
+        chunk->read(reinterpret_cast<char*>(&chunkChunk), sizeof(uint64_t));
+        m_dataCaches.emplace(cacheIdx, chunk);
+        m_recentCacheAccess.push_back(cacheIdx);
 
-    if (m_recentCacheAccess.size() > MAX_CACHE_CHUNKS) {
-        int64_t removedCacheIndex = m_recentCacheAccess.front();
-        m_recentCacheAccess.pop_front();
-        m_dataCaches.erase(removedCacheIndex);
+        if (m_recentCacheAccess.size() > MAX_CACHE_CHUNKS) {
+            int64_t removedCacheIndex = m_recentCacheAccess.front();
+            m_recentCacheAccess.pop_front();
+            m_dataCaches.erase(removedCacheIndex);
+        }
+
+        return chunk;
     }
-
-    return chunk;
 }
 
 char ByteRay::at(int64_t i) const

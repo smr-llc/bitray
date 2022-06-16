@@ -1,6 +1,7 @@
 #pragma once
 
 #include <mutex>
+#include <shared_mutex>
 #include <fstream>
 
 class FileChunkCache {
@@ -23,5 +24,5 @@ private:
     int64_t m_offset;
     std::fstream *m_filestream;
     std::mutex *m_fileMutex;
-    mutable std::mutex m_cacheMutex;
+    mutable std::shared_mutex m_cacheMutex;
 };
