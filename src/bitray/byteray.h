@@ -13,6 +13,10 @@
 
 namespace fs = std::filesystem;
 
+/*!
+ * \brief An array of bytes that can accomodate very large sizes
+ * 
+ */
 class ByteRay {
 public:
 

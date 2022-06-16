@@ -1,1 +1,1 @@
-add_subdirectory(byteray)
+add_subdirectory(bitray)
