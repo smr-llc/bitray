@@ -1,0 +1,5 @@
+ByteRay
+========
+
+.. doxygenclass:: ByteRay
+   :members:

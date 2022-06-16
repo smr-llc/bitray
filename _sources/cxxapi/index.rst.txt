@@ -1,0 +1,6 @@
+C++ API
+========
+
+.. toctree::
+
+   byteray
