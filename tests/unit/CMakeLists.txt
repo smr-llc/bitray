@@ -6,7 +6,7 @@ add_executable(
 )
 target_link_libraries(
     test_simplebyteray
-    byteray
+    bitray
     gtest_main
 )
 

@@ -33,8 +33,13 @@ public:
 
     ~ByteRay();
 
+    /// get byte at ith position
     char at(int64_t i) const;
+
+    /// get the size of the ByteRay
     int64_t size() const;
+
+    /// resize the ByteRay
     void resize(int64_t size);
 
     void read(char *buffer, int64_t bufferLength, int64_t readOffset = 0) const;
