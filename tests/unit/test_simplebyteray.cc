@@ -2,7 +2,7 @@
 #include <tuple>
 #include <memory>
 #include <cstring>
-#include "byteray.cxx"
+#include "byteray.h"
 
 namespace {
 

@@ -1,7 +1,7 @@
 
 add_library(byteray
-    byteray.cxx
-    filechunkcache.cxx
+    byteray.cc
+    filechunkcache.cc
 )
 
 target_include_directories(byteray

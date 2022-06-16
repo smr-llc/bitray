@@ -9,7 +9,7 @@
 #include <vector>
 #include <map>
 
-#include "filechunkcache.hxx"
+#include "filechunkcache.h"
 
 namespace fs = std::filesystem;
 

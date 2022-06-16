@@ -2,7 +2,7 @@ enable_testing()
 
 add_executable(
     test_simplebyteray
-    test_simplebyteray.cxx
+    test_simplebyteray.cc
 )
 target_link_libraries(
     test_simplebyteray

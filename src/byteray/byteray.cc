@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include "byteray.hxx"
+#include "byteray.h"
 
 #define CHUNK_SIZE (10 * 1000 * 1000)
 #define MAX_CACHE_CHUNKS 5L

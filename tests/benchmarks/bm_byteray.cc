@@ -1,5 +1,5 @@
 #include <benchmark/benchmark.h>
-#include "byteray.hxx"
+#include "byteray.h"
 
 static void BM_Create(benchmark::State& state) {
     for (auto _ : state)
