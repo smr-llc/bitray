@@ -19,7 +19,7 @@ Requirements:
 Clone and build the project:
 ::
 
-    git clone --recursive https://github.com/smr-llc/bitray.git
+    git clone --recurse-submodules https://github.com/smr-llc/bitray.git
     cd bitray
     cmake . -Bbuild -GNinja -DCMAKE_BUILD_TYPE=Release -DBITRAY_BUILD_TESTS=ON
     cmake --build build
