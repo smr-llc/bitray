@@ -37,23 +37,10 @@ INSTANTIATE_TEST_CASE_P(
         CreateWriteReadByteRay,
         CreateWriteReadFixture,
         ::testing::Values(
-                std::make_tuple(1L, 1),
-                std::make_tuple(5L, 1),
-                std::make_tuple(8L, 1),
-                std::make_tuple(1L<<5L, 3L),
-                std::make_tuple(1L<<10L, 7L),
-                std::make_tuple(1L<<15L, (1L<<10L) + 1L),
-                std::make_tuple(1L<<17L, 1L<<12L),
-                std::make_tuple(1L<<17L + 1L, 1L<<8L),
-                std::make_tuple(1L<<17L - 1L, 1L<<8L),
-                std::make_tuple(1L<<20, (1L<<15L) + 3L),
-                std::make_tuple(1L<<24, 8L),
-                std::make_tuple(1L<<24, (1L<<19L) + 3L),
-                std::make_tuple(1L<<26, 1L<<10),
-                std::make_tuple(1L<<26, 8L),
-                std::make_tuple(1L<<28, (1L<<19) + 3L),
-                std::make_tuple(1L<<32, (1L<<26) + 3L),
-                std::make_tuple(1L<<33, (1L<<26) + 3L)
+                std::make_tuple(1L<<34, (1L<<28L) + (1L<<10L) + 13L), // 16 GiB
+                std::make_tuple(1L<<35, (1L<<29L) + (1L<<11L) + 13L), // 32 GiB
+                std::make_tuple(1L<<36, (1L<<30L) + (1L<<12L) + 13L), // 64 GiB
+                std::make_tuple(1L<<37, (1L<<31L) + (1L<<13L) + 13L) // 128 GiB
         )
 );
 

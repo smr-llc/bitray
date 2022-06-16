@@ -34,7 +34,7 @@ ByteRay::ByteRay() :
         m_dataFilePath = fs::temp_directory_path() / ("byteray" + random_string(8));
     }
     m_dataFile.open(m_dataFilePath, std::fstream::out);
-    m_dataFile.write("byteray", 7);
+    m_dataFile.write("\0", 1);
     m_dataFile.close();
     m_dataFile.open(m_dataFilePath, std::fstream::in | std::fstream::out | std::fstream::binary);
 }
